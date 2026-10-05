@@ -1,0 +1,11 @@
+.git
+.claude
+planning
+backend
+**/node_modules
+**/.nuxt
+**/.output
+**/.env
+**/.env.*
+!**/.env.example
+*.log

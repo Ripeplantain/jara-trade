@@ -1,0 +1,29 @@
+# Jara Trade: `docker compose up --build`, then open http://localhost:3000
+services:
+  backend:
+    build: ./backend
+    environment:
+      # All optional. Without MASSIVE_API_KEY prices come from the simulator;
+      # without OPENROUTER_API_KEY the assistant panel shows "not configured".
+      MASSIVE_API_KEY: ${MASSIVE_API_KEY:-}
+      OPENROUTER_API_KEY: ${OPENROUTER_API_KEY:-}
+      ASSISTANT_MODEL: ${ASSISTANT_MODEL:-}
+    volumes:
+      - jara-data:/data
+    restart: unless-stopped
+
+  frontend:
+    build:
+      context: .
+      dockerfile: frontend/Dockerfile
+      args:
+        NUXT_BACKEND_URL: http://backend:8000
+    ports:
+      - "${PORT:-3000}:3000"
+    depends_on:
+      backend:
+        condition: service_healthy
+    restart: unless-stopped
+
+volumes:
+  jara-data:

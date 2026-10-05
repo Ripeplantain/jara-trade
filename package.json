@@ -1,0 +1,10 @@
+{
+  "name": "jara-trade",
+  "private": true,
+  "scripts": {
+    "dev": "pnpm --filter jara-trade-frontend dev",
+    "build": "pnpm --filter jara-trade-frontend build",
+    "test": "pnpm --filter jara-trade-frontend test",
+    "typecheck": "pnpm --filter jara-trade-frontend typecheck"
+  }
+}

@@ -1,0 +1,170 @@
+@import "tailwindcss";
+
+/* Dark is the default look; [data-theme="light"] on <html> swaps the palette. */
+:root {
+  color-scheme: dark;
+  --bg: #0a0d12;
+  --panel: #10141b;
+  --raised: #171c25;
+  --line: #222935;
+  --fg: #e7eaf0;
+  --muted: #8d97a7;
+  --faint: #5f6878;
+  --accent: #5b9cf5;
+  --up: #2fbf87;
+  --down: #f2516a;
+  --warn: #e8b23a;
+}
+
+:root[data-theme="light"] {
+  color-scheme: light;
+  --bg: #f2f4f7;
+  --panel: #ffffff;
+  --raised: #f5f6f9;
+  --line: #dde1e8;
+  --fg: #141922;
+  --muted: #586172;
+  --faint: #8a93a2;
+  --accent: #1f5fe0;
+  --up: #0b8a59;
+  --down: #d42a45;
+  --warn: #a8690a;
+}
+
+@theme inline {
+  --color-bg: var(--bg);
+  --color-panel: var(--panel);
+  --color-raised: var(--raised);
+  --color-line: var(--line);
+  --color-fg: var(--fg);
+  --color-muted: var(--muted);
+  --color-faint: var(--faint);
+  --color-accent: var(--accent);
+  --color-up: var(--up);
+  --color-down: var(--down);
+  --color-warn: var(--warn);
+  --font-sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --font-mono: ui-monospace, "SF Mono", SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
+}
+
+@layer base {
+  html {
+    background: var(--bg);
+  }
+
+  body {
+    min-height: 100dvh;
+    background: var(--bg);
+    color: var(--fg);
+    font-family: var(--font-sans);
+    font-size: 13px;
+    line-height: 1.4;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  button:not(:disabled),
+  [role="button"] {
+    cursor: pointer;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 1px;
+  }
+
+  /* Number inputs: no spinners, they fight with the shortcut buttons. */
+  input[type="number"] {
+    appearance: textfield;
+  }
+  input[type="number"]::-webkit-inner-spin-button,
+  input[type="number"]::-webkit-outer-spin-button {
+    appearance: none;
+    margin: 0;
+  }
+}
+
+/* Every figure: fixed-width digits so columns do not jitter as prices tick. */
+@utility num {
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum" 1;
+}
+
+@utility label {
+  font-size: 10.5px;
+  font-weight: 600;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+/* Dense data tables shared by the watchlist, positions and trades panels. */
+@layer components {
+  .data-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-variant-numeric: tabular-nums;
+  }
+  .data-table th {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    padding: 6px 8px;
+    background: var(--panel);
+    border-bottom: 1px solid var(--line);
+    font-size: 10.5px;
+    font-weight: 600;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+    color: var(--muted);
+    text-align: right;
+    white-space: nowrap;
+  }
+  .data-table td {
+    padding: 6px 8px;
+    border-bottom: 1px solid color-mix(in srgb, var(--line) 60%, transparent);
+    text-align: right;
+    white-space: nowrap;
+  }
+  .data-table th:first-child,
+  .data-table td:first-child {
+    padding-left: 12px;
+    text-align: left;
+  }
+  .data-table th:last-child,
+  .data-table td:last-child {
+    padding-right: 12px;
+  }
+  .data-table tbody tr:last-child td {
+    border-bottom: 0;
+  }
+}
+
+/*
+ * Row flash on a price change. Two identical animations per colour: switching
+ * between the "a" and "b" class restarts the animation without remounting the row.
+ */
+@keyframes flash-up-a {
+  from { background-color: color-mix(in srgb, var(--up) 24%, transparent); }
+}
+@keyframes flash-up-b {
+  from { background-color: color-mix(in srgb, var(--up) 24%, transparent); }
+}
+@keyframes flash-down-a {
+  from { background-color: color-mix(in srgb, var(--down) 24%, transparent); }
+}
+@keyframes flash-down-b {
+  from { background-color: color-mix(in srgb, var(--down) 24%, transparent); }
+}
+.flash-up-a { animation: flash-up-a 700ms ease-out; }
+.flash-up-b { animation: flash-up-b 700ms ease-out; }
+.flash-down-a { animation: flash-down-a 700ms ease-out; }
+.flash-down-b { animation: flash-down-b 700ms ease-out; }
+
+@keyframes pulse-dot {
+  50% { opacity: 0.35; }
+}
+.pulse-dot { animation: pulse-dot 1.2s ease-in-out infinite; }
+
+@media (prefers-reduced-motion: reduce) {
+  .flash-up-a, .flash-up-b, .flash-down-a, .flash-down-b, .pulse-dot { animation: none; }
+}
